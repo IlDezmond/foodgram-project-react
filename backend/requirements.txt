@@ -1,0 +1,11 @@
+requests==2.26.0
+Django==3.2
+djangorestframework==3.12.4
+django-filter==22.1
+gunicorn==20.0.4
+psycopg2-binary==2.9.5
+environs==9.5.0
+djoser==2.1.0
+Pillow==9.4.0
+drf-extra-fields==3.4.1
+django-cleanup==7.0.0

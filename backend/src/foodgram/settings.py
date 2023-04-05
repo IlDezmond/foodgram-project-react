@@ -2,9 +2,15 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from environs import Env
+
+
+env = Env()
+env.read_env('../../infra_dev/.env')
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-4)dc!ag&rz$+&3tm-)c&^jp8%da%%g&k7zzzci4^+zhip%y2-u'
+SECRET_KEY = env.str('SECRET_KEY', 'django-insecure-4)dc!ag&rz$+&3tm-)c&^jp8%da%%g&k7zzzci4^+zhip%y2-u')
 
 DEBUG = True
 
@@ -64,8 +70,12 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': env.str('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': env.str('DB_NAME', 'postgres'),
+        'USER': env.str('POSTGRES_USER', 'postgres'),
+        'PASSWORD': env.str('POSTGRES_PASSWORD', '123456'),
+        'HOST': env.str('DB_HOST', 'db'),
+        'PORT': env.str('DB_PORT', '5432')
     }
 }
 
@@ -104,8 +114,6 @@ else:
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
 AUTH_USER_MODEL = 'users.User'
 

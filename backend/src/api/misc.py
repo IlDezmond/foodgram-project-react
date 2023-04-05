@@ -3,9 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from recipes.models import Recipe
-from .serializers import (
-    RecipeShortSerializer
-)
+from .serializers import RecipeShortSerializer
 
 
 def recipe_m2m_create_delete(request, pk, model, create_error, delete_error):

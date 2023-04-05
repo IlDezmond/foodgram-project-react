@@ -6,7 +6,7 @@ from environs import Env
 
 
 env = Env()
-env.read_env('../../infra_dev/.env')
+env.read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -74,7 +74,7 @@ DATABASES = {
         'NAME': env.str('DB_NAME', 'postgres'),
         'USER': env.str('POSTGRES_USER', 'postgres'),
         'PASSWORD': env.str('POSTGRES_PASSWORD', '123456'),
-        'HOST': env.str('DB_HOST', 'db'),
+        'HOST': env.str('DB_HOST', 'localhost'),
         'PORT': env.str('DB_PORT', '5432')
     }
 }

@@ -14,12 +14,7 @@ SECRET_KEY = env.str('SECRET_KEY', 'django-insecure-4)dc!ag&rz$+&3tm-)c&^jp8%da%
 
 DEBUG = env.bool('DEBUG', True)
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-    'host.docker.internal',
-    '158.160.17.234'
-]
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -33,6 +28,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
+    'django_dump_load_utf8',
 
     'users',
     'recipes',
@@ -108,15 +104,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
-if DEBUG:
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-    MEDIA_URL = 'http://127.0.0.1:8000/media/'
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-    MEDIA_URL = '/media/'
+STATIC_URL = '/back-static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'back-static')
+MEDIA_URL = '/back-media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'back-media')
 
 
 AUTH_USER_MODEL = 'users.User'

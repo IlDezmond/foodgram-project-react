@@ -9,5 +9,5 @@ urlpatterns = [
 ]
 if settings.DEBUG:
     urlpatterns += static(
-        '/media/', document_root=settings.MEDIA_ROOT
+        '/back-media/', document_root=settings.MEDIA_ROOT
     )

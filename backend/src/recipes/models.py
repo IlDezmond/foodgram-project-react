@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
 User = get_user_model()
@@ -47,9 +47,15 @@ class Recipe(models.Model):
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         ordering = '-pub_date',
+        constraints = (
+            models.UniqueConstraint(
+                fields=('name', 'author'),
+                name='unique_recipe_author'
+            ),
+        )
 
     def __str__(self):
-        return self.name[:30]
+        return f'id: {self.id}, название: {self.name[:30]}'
 
 
 class Ingredient(models.Model):
@@ -59,9 +65,15 @@ class Ingredient(models.Model):
     class Meta:
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиент'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('name', 'measurement_unit'),
+                name='unique_ingredient'
+            ),
+        )
 
     def __str__(self):
-        return self.name[:30]
+        return f'{self.name[:30]}, {self.measurement_unit}'
 
 
 class IngredientAmount(models.Model):
@@ -82,6 +94,16 @@ class IngredientAmount(models.Model):
         validators=(MinValueValidator(1),)
     )
 
+    class Meta:
+        verbose_name = 'Ингридиент в рецепте'
+        verbose_name_plural = 'Ингридиенты в рецепте'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('recipe', 'ingredient'),
+                name='unique_ingredient_in_recipe'
+            ),
+        )
+
 
 class Tag(models.Model):
     name = models.CharField(
@@ -92,7 +114,12 @@ class Tag(models.Model):
     color = models.CharField(
         verbose_name='Цвет тега',
         max_length=7,
-        unique=True
+        unique=True,
+        validators=(RegexValidator(
+            '^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$',
+            'Значение не соответствует формату hex'
+            ),
+        )
     )
     slug = models.SlugField(
         verbose_name='Слаг тега',
@@ -132,6 +159,9 @@ class Favorite(models.Model):
             ),
         )
 
+    def __str__(self):
+        return f'{self.user.name[:30]} : {self.recipe.name[:30]}'
+
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(
@@ -156,3 +186,6 @@ class ShoppingCart(models.Model):
                 name='unique_user_recipe_cart'
             ),
         )
+
+    def __str__(self):
+        return f'{self.user.name[:30]} : {self.recipe.name[:30]}'

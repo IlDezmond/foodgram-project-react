@@ -2,6 +2,8 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
 class AuthorOrReadOnly(BasePermission):
+    message = 'Вы не являетесь автором'
+
     def has_permission(self, request, view):
         return (
                 request.method in SAFE_METHODS

@@ -12,9 +12,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = env.str('SECRET_KEY', 'django-insecure-4)dc!ag&rz$+&3tm-)c&^jp8%da%%g&k7zzzci4^+zhip%y2-u')
 
-DEBUG = True
+DEBUG = env.bool('DEBUG', True)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'host.docker.internal',
+    '158.160.17.234'
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -34,8 +39,7 @@ INSTALLED_APPS = [
     'api',
 
     'django_cleanup.apps.CleanupConfig',
-    # Согласно документации
-    # конфиг данного приложения должен стоять в самом конце
+    # Согласно документации этот конфиг должен стоять в конце
 ]
 
 MIDDLEWARE = [
@@ -134,11 +138,12 @@ DJOSER = {
         'user': 'api.serializers.UserSerializer',
         'current_user': 'api.serializers.UserSerializer',
         'user_create': 'api.serializers.UserSerializer',
+        'subscribe': 'api.serializers.FollowSerializer',
+        'subscriptions': 'api.serializers.UserFollowSerializer',
     },
     'PERMISSIONS': {
         'user': ('rest_framework.permissions.IsAuthenticated',),
         'user_list': ('rest_framework.permissions.AllowAny',),
-
     },
 }
 

@@ -57,3 +57,6 @@ class Follow(models.Model):
                 name='unique_user_follow_author'
             )
         ]
+
+    def __str__(self):
+        return f'{self.user.username} {self.author.username}'

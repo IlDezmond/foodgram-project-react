@@ -1,9 +1,10 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as OrigUserAdmin
 from django.contrib.auth.models import Group
 from rest_framework.authtoken.models import TokenProxy
 
-from .models import User
+User = get_user_model()
 
 admin.site.unregister(Group)
 admin.site.unregister(TokenProxy)

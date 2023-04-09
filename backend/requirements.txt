@@ -38,3 +38,4 @@ sqlparse==0.4.3
 uritemplate==4.1.1
 urllib3==1.26.15
 django-dump-load-utf8==0.0.4
+python-decouple==3.8

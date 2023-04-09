@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from decouple import config, Csv
 from environs import Env
 
 env = Env()
@@ -18,6 +19,13 @@ ALLOWED_HOSTS = [
     '158.160.17.234',
     'host.docker.internal',
 ]
+
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='http://localhost, http://127.0.0.1',
+    cast=Csv()
+)
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',

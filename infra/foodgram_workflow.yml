@@ -76,8 +76,8 @@ jobs:
             echo DEBUG=${{ secrets.DEBUG }} >> .env
             sudo docker image pull ildezmond/infra-backend:latest
             sudo docker-compose up -d
-            sudo docker-compose exec web python manage.py migrate
-            sudo docker-compose exec -T web python manage.py collectstatic --noinput
+            sudo docker-compose exec backend python manage.py migrate
+            sudo docker-compose exec -T backend python manage.py collectstatic --noinput
 
   send_message:
     runs-on: ubuntu-latest

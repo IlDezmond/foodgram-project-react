@@ -8,9 +8,7 @@ services:
       - .env
 
   backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: ildezmond/infra-backend:latest
     volumes:
       - static_value:/app/back-static/
       - media_value:/app/back-media/
@@ -21,9 +19,7 @@ services:
     restart: always
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: ildezmond/infra-frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
 

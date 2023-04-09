@@ -119,7 +119,7 @@ class Tag(models.Model):
         validators=(RegexValidator(
             '^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$',
             'Значение не соответствует формату hex'
-            ),
+        ),
         )
     )
     slug = models.SlugField(

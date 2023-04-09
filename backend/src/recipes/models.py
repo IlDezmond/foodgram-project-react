@@ -71,6 +71,7 @@ class Ingredient(models.Model):
                 name='unique_ingredient'
             ),
         )
+        indexes = (models.Index(fields=('name', 'measurement_unit')),)
 
     def __str__(self):
         return f'{self.name[:30]}, {self.measurement_unit}'
@@ -158,6 +159,7 @@ class Favorite(models.Model):
                 name='unique_user_recipe_favorite'
             ),
         )
+        indexes = (models.Index(fields=('recipe',)),)
 
     def __str__(self):
         return f'{self.user.name[:30]} : {self.recipe.name[:30]}'
@@ -186,6 +188,7 @@ class ShoppingCart(models.Model):
                 name='unique_user_recipe_cart'
             ),
         )
+        indexes = (models.Index(fields=('recipe',)),)
 
     def __str__(self):
         return f'{self.user.name[:30]} : {self.recipe.name[:30]}'

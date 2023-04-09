@@ -8,7 +8,9 @@ services:
       - .env
 
   backend:
-    build: ../backend/src/
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
     volumes:
       - static_value:/app/back-static/
       - media_value:/app/back-media/

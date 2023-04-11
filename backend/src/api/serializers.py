@@ -128,8 +128,8 @@ class IngredientSerializer(serializers.ModelSerializer):
 class RecipeReadSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     ingredients = SerializerMethodField()
-    is_favorited = serializers.BooleanField(default=False)
-    is_in_shopping_cart = serializers.BooleanField(default=False)
+    is_favorited = serializers.BooleanField()
+    is_in_shopping_cart = serializers.BooleanField()
     author = UserSerializer(read_only=True)
 
     class Meta:
@@ -167,11 +167,19 @@ class RecipeWriteSerializer(RecipeReadSerializer):
                   'text', 'cooking_time')
 
     def validate(self, data):
+        request = self.context.get('request')
         ingredients = self.initial_data.get('ingredients')
         ingredients = [ingredient['id'] for ingredient in ingredients]
         if len(ingredients) != len(set(ingredients)):
             raise serializers.ValidationError(
                 'Ингредиенты должны быть в одном экземпляре'
+            )
+        if request.method == 'POST' and Recipe.objects.filter(
+            author=request.user,
+            name=self.initial_data.get('name')
+        ).exists():
+            raise serializers.ValidationError(
+                'У вас уже есть рецепт с таким названием'
             )
         return data
 
@@ -199,6 +207,17 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
+        user = self.context['request'].user
+        is_favorited = Favorite.objects.filter(
+            user=user,
+            recipe=instance
+        ).exists()
+        is_in_shopping_cart = ShoppingCart.objects.filter(
+            user=user,
+            recipe=instance
+        ).exists()
+        setattr(instance, 'is_favorited', is_favorited)
+        setattr(instance, 'is_in_shopping_cart', is_in_shopping_cart)
         serializer = RecipeReadSerializer(
             instance,
             context={'request': self.context.get('request')}
@@ -242,7 +261,6 @@ class ShoppingCartSerializer(FavoriteSerializer):
 
 
 class FollowSerializer(FavoriteSerializer):
-
     class Meta:
         model = Follow
         fields = (

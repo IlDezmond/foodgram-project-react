@@ -69,11 +69,22 @@ class UserViewSet(DjUserViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.prefetch_related('tags', 'author', 'ingredients')
     pagination_class = CustomPageNumberPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     permission_classes = (AuthorOrReadOnly,)
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return (
+                Recipe.objects.add_favorite_cart(self.request.user)
+                .prefetch_related('tags', 'author', 'ingredients')
+            )
+        else:
+            return (
+                Recipe.objects.
+                prefetch_related('tags', 'author', 'ingredients')
+            )
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):

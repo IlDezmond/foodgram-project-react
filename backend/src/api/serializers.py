@@ -128,8 +128,8 @@ class IngredientSerializer(serializers.ModelSerializer):
 class RecipeReadSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     ingredients = SerializerMethodField()
-    is_favorited = SerializerMethodField()
-    is_in_shopping_cart = SerializerMethodField()
+    is_favorited = serializers.BooleanField(default=False)
+    is_in_shopping_cart = serializers.BooleanField(default=False)
     author = UserSerializer(read_only=True)
 
     class Meta:
@@ -141,18 +141,6 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'id', 'name', 'measurement_unit', amount=F('recipe__amount')
         )
         return ingredients
-
-    def get_is_favorited(self, recipe):
-        current_user = self.context['request'].user
-        if current_user.is_authenticated:
-            return current_user.favorite.filter(recipe=recipe).exists()
-        return False
-
-    def get_is_in_shopping_cart(self, recipe):
-        current_user = self.context['request'].user
-        if current_user.is_authenticated:
-            return current_user.shopping_cart.filter(recipe=recipe).exists()
-        return False
 
 
 class IngredientAmountSerializer(serializers.ModelSerializer):
@@ -177,6 +165,15 @@ class RecipeWriteSerializer(RecipeReadSerializer):
         model = Recipe
         fields = ('id', 'tags', 'author', 'ingredients', 'name', 'image',
                   'text', 'cooking_time')
+
+    def validate(self, data):
+        ingredients = self.initial_data.get('ingredients')
+        ingredients = [ingredient['id'] for ingredient in ingredients]
+        if len(ingredients) != len(set(ingredients)):
+            raise serializers.ValidationError(
+                'Ингредиенты должны быть в одном экземпляре'
+            )
+        return data
 
     def create_ingredients(self, ingredients, recipe):
         IngredientAmount.objects.bulk_create([IngredientAmount(

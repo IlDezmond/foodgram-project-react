@@ -1,8 +1,25 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
+from django.db.models import Exists, OuterRef
 
 User = get_user_model()
+
+
+class CustomRecipeManager(models.Manager):
+    def add_favorite_cart(self, user):
+        return self.annotate(
+            is_favorited=Exists(
+                Favorite.objects.filter(
+                    user=user, recipe__pk=OuterRef('pk')
+                )
+            ),
+            is_in_shopping_cart=Exists(
+                ShoppingCart.objects.filter(
+                    user=user, recipe__pk=OuterRef('pk')
+                )
+            ),
+        )
 
 
 class Recipe(models.Model):
@@ -42,6 +59,7 @@ class Recipe(models.Model):
         verbose_name='Время приготовления',
         validators=()
     )
+    objects = CustomRecipeManager()
 
     class Meta:
         verbose_name = 'Рецепт'

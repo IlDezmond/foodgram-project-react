@@ -180,7 +180,7 @@ class Favorite(models.Model):
         indexes = (models.Index(fields=('recipe',)),)
 
     def __str__(self):
-        return f'{self.user.name[:30]} : {self.recipe.name[:30]}'
+        return f'{self.user.username[:30]} : {self.recipe.name[:30]}'
 
 
 class ShoppingCart(models.Model):
@@ -209,4 +209,4 @@ class ShoppingCart(models.Model):
         indexes = (models.Index(fields=('recipe',)),)
 
     def __str__(self):
-        return f'{self.user.name[:30]} : {self.recipe.name[:30]}'
+        return f'{self.user.username[:30]} : {self.recipe.name[:30]}'
